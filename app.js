@@ -1,10 +1,8 @@
-/*Importando express*/
-var express = require('express');
+const express = require ('express');
+const app = express();
 
-var app = express();
-
-app.get('/', function(req, res){
-  res.send('Hello');
+app.get ('/', function (request, response){
+  response.render ('index.ejs');
 });
 
 app.listen (3000, function(){

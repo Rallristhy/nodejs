@@ -47,11 +47,7 @@ Utilizando GIT
 		git push nodejs master
 
 	7 - Se durante o tempo em que fez o pull e o push outra pessoa que também participe do projeto fez alterações o push será rejeitado. Então é necessário atualizar o projeto local antes de enviar novas alterações.
-		git fetch nodejs
-	
-	
-	
-		
+		git fetch nodejs	
 
 bower install bootstrap --save
 
