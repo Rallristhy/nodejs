@@ -34,6 +34,17 @@ Utilizando GIT
 	3 - Adicionar o repositório criado no passo 1 com o link do repositório criado no Git
 		git remote add nodejs https://github.com/Rallristhy/nodejs.git
 	4 - Baixar(pull=puxar) o projeto, modificações..
+		git pull nodejs master
+	5 - Adicionar arquivo:
+		git add nodedoarquivo ou pasta 
+		ou git add . (para add todas as alterações)
+		git status (para verificar o que está preparado para enviar vermelho a enviar verde esperando commit)
+		git commit -m "mensagem"
+		
+			Caso queira ignorar alguma pasta ou arquivo ao usar o camando add:
+				Entre em .git/info/exclude e adicione a pasta ou arquivo linha a linha.
+	
+	
 	
 		
 
