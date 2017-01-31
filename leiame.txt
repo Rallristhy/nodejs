@@ -38,16 +38,14 @@ Utilizando GIT
 	5 - Adicionar arquivo:
 		git add nodedoarquivo ou pasta 
 		ou git add . (para add todas as alterações)
-		git status (para verificar o que está preparado para enviar vermelho a enviar verde esperando commit)
-		git commit -m "mensagem"
-		
+		git status (para verificar o que está preparado para enviar vermelho sem commit verde com commit)
+
 			Caso queira ignorar alguma pasta ou arquivo ao usar o camando add:
 				Entre em .git/info/exclude e adicione a pasta ou arquivo linha a linha.
-	6 - Enviar(push=empurrar) as alterações:
-		git push nodejs master
-
-	7 - Se durante o tempo em que fez o pull e o push outra pessoa que também participe do projeto fez alterações o push será rejeitado. Então é necessário atualizar o projeto local antes de enviar novas alterações.
-		git fetch nodejs	
+	
+	
+	
+		
 
 bower install bootstrap --save
 
