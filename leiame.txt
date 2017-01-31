@@ -1,0 +1,41 @@
+Instalar nodejs
+npm init (criar um package.json)
+npm config set strict-ssl false
+npm install express --save (--save salva no package.json. Caso apaque o node_modules apenas npm install fará a leitura no json e instala os pacotes)
+npm install nodemon --save
+npm install -g nodemon
+testar nodemon app.js (add como script no package.json)
+
+bower (facilita a instalação de pacotes front-end como angular, bootstrap, etc..)
+criar um arquivo .bowerrc
+add o texto no arquivo:
+{
+
+"strict-ssl": false
+
+}
+
+instalar git
+	escolher a opção: Use Git from the Windows Command Prompt
+	Ckeckout Windows-style, commit Unix-style line endings
+
+Utilizando GIT
+	Por padrão o git vai pegar o usuário do sistema, para que seu nome de usuário do github apareça corretamente use os comandos:
+		git config --global user.name "rallristhy"
+		git config --global user.email "rallristhy@outlook.com"
+
+	git config --global http.sslVerify false (resolver problema de certificado)
+
+	1 - Crie um espaço para o projeto no comnputador
+		mkdir nodejs
+		cd nodejs
+		git init (será criado uma pasta oculta .git "ficam as configurações que serão usadas para este projeto")
+	2 - Crie um novo repositório no site git
+	3 - Adicionar o repositório criado no passo 1 com o link do repositório criado no Git
+		git remote add nodejs https://github.com/Rallristhy/nodejs.git
+	4 - Baixar(pull=puxar) o projeto, modificações..
+	
+		
+
+bower install bootstrap --save
+
