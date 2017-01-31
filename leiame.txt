@@ -43,6 +43,11 @@ Utilizando GIT
 		
 			Caso queira ignorar alguma pasta ou arquivo ao usar o camando add:
 				Entre em .git/info/exclude e adicione a pasta ou arquivo linha a linha.
+	6 - Enviar(push=empurrar) as alterações:
+		git push nodejs master
+
+	7 - Se durante o tempo em que fez o pull e o push outra pessoa que também participe do projeto fez alterações o push será rejeitado. Então é necessário atualizar o projeto local antes de enviar novas alterações.
+		git fetch nodejs
 	
 	
 	
