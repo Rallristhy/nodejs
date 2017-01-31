@@ -1,0 +1,13 @@
+##Angular##
+Manipula o html de forma dinâmica usando javascript de maneira simplificada
+ng-model = o nome da variável será possível acessar no cód javascript com forme for digitando(tempo real)
+ng_disable = se true botão fica desabilitado !name(variável) se não tiver preenchido desabilita o botão
+ng-show = se variável em questão(name) for nulo ou indefinido não mostra, senão mostra {{variavel ng-model}}
+
+NO servidor JS
+$scope (escutando variáveis)
+$scope.submit = function() {
+  $http.get('service?name' +$scope.name);
+}
+
+$scope.name
