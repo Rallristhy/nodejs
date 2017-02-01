@@ -2,10 +2,7 @@
   "name": "rall",
   "description": "rall project",
   "main": [
-    "app.js",
-    "less/bootstrap.less",
-    "dist/js/bootstrap.js"
-    "dist/css/bootstrap.css"
+    "app.js"
   ],
   "authors": [
     "rallristhy"
