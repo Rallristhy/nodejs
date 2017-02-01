@@ -19,7 +19,7 @@
 	<!-- ng-repeat roda enquanto houver elementos-->
 	<li ng-repeat="todo in todoList.todos">
 	  <label class="checkbox">
-	    <input type="checkbox" ng-model="todo.done">
+	    <input type="checkbox" ng-model="todo.done" ng-click="todoList.archive()">
 	    <!-- done-true ou done-false-->
 	    <span class="done-{{todo.done}}">{{todo.text}}</span>
 	  </label>

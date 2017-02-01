@@ -14,7 +14,7 @@
     
     <div ng-controller="TodoListController as todoList">
       <span>{{todoList.remaining()}} de {{todoList.todos.length}}</span>
-      [ <a href="" ng-click="todoList.archive()"></a>]
+      [ <a href="" ng-click="todoList.archive()">Arquivar Tarevas Finalizadas</a>]
       <ul>
 	<!-- ng-repeat roda enquanto houver elementos-->
 	<li ng-repeat="todo in todoList.todos">
