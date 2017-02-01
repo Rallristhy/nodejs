@@ -1,18 +1,12 @@
 /* Importando express */
 const express = require ('express');
-const bodyParser = require ('body-parser');
 const app = express();
 
-/* app usara o bodyParser
- * use interpreta as requisições é um midleware
- */
-app.use(bodyParser.urlencoded({extended : true}));
-
-/* Arquivos de visão terão a extensão ejs */
-app.set('view engine', 'ejs');
+app.use("/bower_components",  express.static(__dirname + '/bower_components'));
+app.use("/views",  express.static(__dirname + '/views'));
 
 app.get ('/', function (request, response){
-  response.render ('index.ejs');
+  response.sendFile(__dirname + '/views/index.html');
 });
 
 app.listen (3000, function(){
