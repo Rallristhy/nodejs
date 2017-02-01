@@ -6,15 +6,39 @@
   <script src="todo.js"></script>
   
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="todo.css">
   <title>Exemplo Node</title>
 </head>
 <body class="container">
     <h2>Todo List</h2>
     
     <div ng-controller="TodoListController as todoList">
-      {{1+4}}
+      <span>{{todoList.remaining()}} de {{todoList.todos.length}}</span>
+      [ <a href="" ng-click="todoList.archive()"></a>]
+      <ul>
+	<!-- ng-repeat roda enquanto houver elementos-->
+	<li ng-repeat="todo in todoList.todos">
+	  <label class="checkbox">
+	    <input type="checkbox" ng-model="todo.done">
+	    <!-- done-true ou done-false-->
+	    <span class="done-{{todo.done}}">{{todo.text}}</span>
+	  </label>
+	</li>
+      </ul>
+      
+      <form ng-submit="todoList.addTodo()">
+	<input type="text" ng-model="todoList.todoText" size="30" placeholder="Adicione uma tarefa..">
+	<input type="submit" class="btn-primary" value="Adicionar">
+      </form>
+    
     </div>
     
+   
+    
+    
+    
+    
+    <!--
     <form>
       <p>
 	Enter your name:
@@ -25,6 +49,6 @@
 	Hello {{name}}
       </p>
     </form>
-    
+    -->
 </body>
 </html>
