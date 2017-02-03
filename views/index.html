@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html ng-app="todoApp">
+<html ng-app="bovespaApp">
 <head>
-  <meta charset="utf-8">
-  <script src="bower_components/angular/angular.min.js"></script>
-  <script src="views/scripts/todo.js"></script>
-  <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="views/css/todo.css">
-  <title>Exemplo</title>
+	<meta charset="utf-8">
+  	<script src="bower_components/angular/angular.min.js"></script>
+  	<script src="views/scripts/bovespa.js"></script>
+
+  	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  	<link rel="stylesheet" type="text/css" href="views/css/bovespa.css">
+  	<title>Bovespa</title>
 </head>
 <body>
-	
-	<p>Olá</p>
+	<div ng-controller="bovespaListController as bovespaList">
+
+		<ul ng-repeat="item in data.bovespaHeaderData">
+			<li>Name: {{item.h_nome_arquivo}}, City: {{item.h_data_geracao_do_arquivo}}</li>
+		</ul>
+
+	</div>
 
 </body>
 </html>
