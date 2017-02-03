@@ -42,6 +42,9 @@ Utilizando GIT
 
 			Caso queira ignorar alguma pasta ou arquivo ao usar o camando add:
 				Entre em .git/info/exclude e adicione a pasta ou arquivo linha a linha.
+
+	ERRO: error: RPC failed; curl 18 transfer closed with outstanding read data remaining 
+		git config --global http.postBuffer 524288000
 	
 	
 	
