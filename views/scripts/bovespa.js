@@ -4,8 +4,9 @@ angular.module('bovespaApp', []).controller('bovespaListController', ['$http', '
   var bovespaList = this;
   
   /* Buscar Informações da rota /data no servidor */
-  $http({method: 'GET', url: '/data'}).then(function successCallback(data) {
+  $http({method: 'GET', url: '/dataHeader'}).then(function successCallback(data) {
       
+      /* Recebe o objeto GET por /data */
       $scope.data = data.data;
 
   }, function errorCallback(response) {

@@ -19,7 +19,39 @@ class bovespaHeader {
   }
 };
 
+class bovespaCotacao {
+	constructor(c_tipo_registro, c_data_do_pregao, c_codigo_bdi, c_codigo_de_negociacao_do_papel, c_tipo_de_mercado, c_nomres, c_especificacao_do_papel, c_prazot, c_moeda_de_referencia, c_preabe, c_premax, c_premin, c_premed, c_preult, c_preofc, c_preofv, c_totneg, c_quatot, c_voltot, c_preexe, c_idopc, c_datven, c_fatcot, c_ptoexe, c_codisi, c_dismes) {
+	this.c_tipo_registro = c_tipo_registro;
+	this.c_data_do_pregao = c_data_do_pregao;
+	this.c_codigo_bdi = c_codigo_bdi;
+	this.c_codigo_de_negociacao_do_papel = c_codigo_de_negociacao_do_papel;
+	this.c_tipo_de_mercado = c_tipo_de_mercado;
+	this.c_nomres = c_nomres;
+	this.c_especificacao_do_papel = c_especificacao_do_papel;
+	this.c_prazot = c_prazot;
+	this.c_moeda_de_referencia = c_moeda_de_referencia;
+	this.c_preabe = c_preabe;
+	this.c_premax = c_premax;
+	this.c_premin = c_premin;
+	this.c_premed = c_premed;
+	this.c_preult = c_preult;
+	this.c_preofc = c_preofc;
+	this.c_preofv = c_preofv;
+	this.c_totneg = c_totneg;
+	this.c_quatot = c_quatot;
+	this.c_voltot = c_voltot;
+	this.c_preexe = c_preexe;
+	this.c_idopc = c_idopc;
+	this.c_datven = c_datven;
+	this.c_fatcot = c_fatcot;
+	this.c_ptoexe = c_ptoexe;
+	this.c_codisi = c_codisi;
+	this.c_dismes = c_dismes;
+  }
+};
+
 var bovespaHeaderData = bovespaHeaderData || [];
+var bovespaCotacaoData = bovespaCotacaoData || [];
 
 fs.readFile('resources/COTAHIST_M122016.TXT', function (err, data) {
    
@@ -78,6 +110,10 @@ fs.readFile('resources/COTAHIST_M122016.TXT', function (err, data) {
 			var c_ptoexe = line.substring(217, 230);
 			var c_codisi = line.substring(230, 242);
 			var c_dismes = line.substring(242, 245);
+
+			var bovespac = new bovespaCotacao(c_tipo_registro, c_data_do_pregao, c_codigo_bdi, c_codigo_de_negociacao_do_papel, c_tipo_de_mercado, c_nomres, c_especificacao_do_papel, c_prazot, c_moeda_de_referencia, c_preabe, c_premax, c_premin, c_premed, c_preult, c_preofc, c_preofv, c_totneg, c_quatot, c_voltot, c_preexe, c_idopc, c_datven, c_fatcot, c_ptoexe, c_codisi, c_dismes);
+			bovespaCotacaoData.push(bovespac);
+
 		}
 
 		/*Fazendo a leitura do Trailer*/
@@ -98,7 +134,7 @@ app.get ('/', function (request, response){
 	response.sendFile(__dirname + '/views/index.html');
 });
 
-app.get('/data', function(request, response){
+app.get('/dataHeader', function(request, response){
 	response.send({bovespaHeaderData});
 });
 

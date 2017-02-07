@@ -1,4 +1,23 @@
-.done-true{
-  text-decoration: line-through;
-  color: gray;
+header {
+	width: 100%; /*Pegar a largura da tela inteira*/
+	height: 150px;
+	background-color: rgba(51, 110, 123, .8);;
+	z-index: 2; /*Trazer para frente*/
+	position: relative;
 }
+
+header .container {
+	position: relative;
+}
+
+/*Espeçamento entre os itens*/
+header ul {
+	margin-bottom: 1px;
+}
+
+header li {
+	list-style-type: none;
+}
+/* 
+	http://www.flatuicolorpicker.com/ 
+*/

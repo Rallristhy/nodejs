@@ -2,21 +2,41 @@
 <html ng-app="bovespaApp">
 <head>
 	<meta charset="utf-8">
-  	<script src="bower_components/angular/angular.min.js"></script>
-  	<script src="views/scripts/bovespa.js"></script>
 
+	<!-- Estilos -->
   	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   	<link rel="stylesheet" type="text/css" href="views/css/bovespa.css">
+
   	<title>Bovespa</title>
 </head>
 <body>
-	<div ng-controller="bovespaListController as bovespaList">
+{{data.bovespaHeaderData}}
+	<header ng-controller="bovespaListController as bovespaList">
 
-		<ul ng-repeat="item in data.bovespaHeaderData">
-			<li>Name: {{item.h_nome_arquivo}}, City: {{item.h_data_geracao_do_arquivo}}</li>
+		<div class="container container-header">
+			<ul ng-repeat="item in data.bovespaHeaderData">
+				<li>Nome: {{item.h_nome_arquivo}}, Data Geração do Arquivo: {{item.h_data_geracao_do_arquivo}}</li>
+
+			</ul>
+
+		</div>
+
+	</header>
+
+	<section>
+		<ul ng-repeat="item2 in data.bovespaCotacaoData">
+			<li>Nome: {{item2.c_tipo_registro}}</li>
+
 		</ul>
 
-	</div>
+	</section>
+
+	<footer>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="bower_components/angular/angular.min.js"></script>
+  	<script src="views/scripts/bovespa.js"></script>
 
 </body>
 </html>
