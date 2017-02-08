@@ -51,7 +51,7 @@ Utilizando GIT
 	
 	
 		
-
+npm install angular-utils-pagination -g --save
 bower install bootstrap --save
 bower install open-sans-fontface -g --save
 bower install fontawesome -g --save
