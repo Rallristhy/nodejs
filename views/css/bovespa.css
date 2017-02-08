@@ -1,22 +1,50 @@
+/* Import Fonts */
+@font-face {
+	font-family: 'OpenSans';
+	src: url("/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf");
+	font-size: 1em; /*em medida relativa para modile tbm*/
+}
+
+@font-face {
+	font-family: 'OpenSans-Light';
+	src: url("/bower_components/open-sans-fontface/fonts/Light/OpenSans-Light.ttf");
+	font-size: 1em; /*em medida relativa para modile tbm*/
+}
+
+/* Style Header */
 header {
 	width: 100%; /*Pegar a largura da tela inteira*/
 	height: 150px;
-	background-color: rgba(51, 110, 123, .8);;
+	background-color: rgba(9, 79, 125, .9);;
 	z-index: 2; /*Trazer para frente*/
-	position: relative;
+	position: fixed;
 }
 
 header .container {
 	position: relative;
 }
 
-/*Espeçamento entre os itens*/
-header ul {
-	margin-bottom: 1px;
+header .rowHeader {
+	margin-top: 42px;
+	color: white;
+	font-family: "OpenSans-Light";
+	text-shadow: 2px 2px 2px rgba(0, 0, 0, .45);
+	font-size: 16px;
+
+}
+
+.fa {
+	color: white;
 }
 
 header li {
 	list-style-type: none;
+
+}
+
+section {
+	position: relative;
+	padding-top: 150px;
 }
 /* 
 	http://www.flatuicolorpicker.com/ 

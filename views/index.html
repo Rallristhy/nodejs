@@ -2,41 +2,122 @@
 <html ng-app="bovespaApp">
 <head>
 	<meta charset="utf-8">
+	<!-- Scripts -->
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
+  	<script src="views/scripts/bovespa.js"></script>
 
 	<!-- Estilos -->
   	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  	<link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css">
   	<link rel="stylesheet" type="text/css" href="views/css/bovespa.css">
 
   	<title>Bovespa</title>
 </head>
-<body>
-{{data.bovespaHeaderData}}
-	<header ng-controller="bovespaListController as bovespaList">
+<body ng-controller="bovespaListController as bovespaList">
 
-		<div class="container container-header">
-			<ul ng-repeat="item in data.bovespaHeaderData">
-				<li>Nome: {{item.h_nome_arquivo}}, Data Geração do Arquivo: {{item.h_data_geracao_do_arquivo}}</li>
+	<header>
+		<!--
+		{{dataTrailer.bovespaTrailerData}}
 
-			</ul>
+		{{dataCotacao.bovespaCotacaoData[1]}} -->
+		<div class="container">
+			<div class="row rowHeader">
+				<ul>
+					<li ng-repeat="header in dataHeader.bovespaHeaderData">
+						
+						<div class="col-xs-4">
+							<p>
+								<i class="fa fa-arrow-circle-right"></i>
+								<label>Nome do Arquivo: </label>
+								<small>{{header.h_nome_arquivo}}</small>
 
+							</p>
+						</div>
+						
+						<div class="col-xs-4">
+							<p>
+								<i class="fa fa-arrow-circle-right"></i>
+								<label>Cod. Origem: </label>
+								<small>{{header.h_codigo_da_origem}}</small>
+							</p>
+						</div>
+
+						<div class="col-xs-4">
+							<p>
+								<i class="fa fa-calendar"></i>
+								<label>Data Geracao: </label>
+								<small>{{header.h_data_geracao_do_arquivo}}</small>
+							</p>
+						</div>
+
+						<div class="col-xs-4">
+							<p>
+								<i class="fa fa-arrow-circle-up"></i>
+								<label>Tipo de Registro: </label>
+								<small>{{header.h_tipo_registro}}</small>
+							</p>
+						</div>
+
+						<div class="col-xs-8">
+							<p>
+								<i class="fa fa-arrow-circle-up"></i>
+								<label>Reserva: </label>
+								<small>{{header.h_reserva}}</small>
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
 		</div>
 
 	</header>
-
 	<section>
-		<ul ng-repeat="item2 in data.bovespaCotacaoData">
-			<li>Nome: {{item2.c_tipo_registro}}</li>
+		<div class="container">
+			<div class="row rowCotacao">
 
-		</ul>
+				<table class="table">
+					<thead>
+				        <tr>
+				            <th>Tip. Reg.</th>
+				            <th>Data do Pregão</th>
+				            <th>Cod. BDI</th>
+				            <th>Cod. Neg. do Papel</th>
+				            <th>Tipo Mercado</th>
+				            <th>Representante</th>
+				            <th>Especificacao</th>
+				            <th>Prazo</th>
+				            <th>Moeda</th>
+				            <th>Preço de Abertura</th>
+				        </tr>
+				    </thead>
+				    <tbody>
+				        <tr dir-paginate="cotacao in dataCotacao.bovespaCotacaoData | itemsPerPage:50">
+				            <td>{{cotacao.c_tipo_registro}}</td>
+				            <td>{{cotacao.c_data_do_pregao}}</td>
+				            <td>{{cotacao.c_codigo_bdi}}</td>
+				            <td>{{cotacao.c_codigo_de_negociacao_do_papel}}</td>
+				            <td>{{cotacao.c_tipo_de_mercado}}</td>
+				            <td>{{cotacao.c_nomres}}</td>
+				            <td>{{cotacao.c_especificacao_do_papel}}</td>
+				            <td>{{cotacao.c_prazot}}</td>
+				            <td>{{cotacao.c_moeda_de_referencia}}</td>
+				            <td>{{cotacao.c_preabe}}</td>
+				            
+				        </tr>
+				    </tbody>
+
+				</table>
+				<dir-pagination-controls max-size="20" boundary-links="true"></dir-pagination-controls>
+			</div>
+		</div>
+
+	
 
 	</section>
 
 	<footer>
 	</footer>
-
-	<!-- Scripts -->
-	<script src="bower_components/angular/angular.min.js"></script>
-  	<script src="views/scripts/bovespa.js"></script>
 
 </body>
 </html>

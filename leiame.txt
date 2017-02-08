@@ -45,10 +45,15 @@ Utilizando GIT
 
 	ERRO: error: RPC failed; curl 18 transfer closed with outstanding read data remaining 
 		git config --global http.postBuffer 524288000
+
+
 	
 	
 	
 		
 
 bower install bootstrap --save
+bower install open-sans-fontface -g --save
+bower install fontawesome -g --save
+
 
