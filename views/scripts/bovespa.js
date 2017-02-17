@@ -33,4 +33,10 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
     console.log('Erro ao receber arquivo: ' + data);
   });
 
+  var socket = io();
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+
 }]);

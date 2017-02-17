@@ -2,6 +2,12 @@
 const express = require ('express');
 const app = express();
 
+/* Cria um server */
+const server = require('http').createServer(app);
+
+/* Importa o socket.io e passa para seu módulo o server criado */
+const io = require('socket.io')(server);
+
 /* Importando File System */
 var fs = require('fs');
 
@@ -166,7 +172,20 @@ app.get('/dataCotacao', function(request, response){
 	response.send({bovespaCotacaoData});
 });
 
+/* Abrino Conexão com o Cliente */
+io.on('connection', function(socket){
+
+	/*Ip*/
+	console.log(socket.handshake.address+'um usuario entrou');
+
+	/* Fecha Conexão com o Cliente */
+  	socket.on('disconnect', function(){
+    	console.log(socket.handshake.address+' saiu');
+  	});
+
+});
+
 /* Listando APP na porta 3000 */
-app.listen (3000, function(){
+server.listen (3000, function(){
 	console.log ('Server running...');
 });
