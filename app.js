@@ -10,6 +10,7 @@ app.use("/bower_components",  express.static(__dirname + '/bower_components'));
 app.use("/node_modules",  express.static(__dirname + '/node_modules'));
 app.use("/views",  express.static(__dirname + '/views'));
 
+/* Criando Objetos para guardar as informações do  */
 class bovespaHeader {
 	constructor(h_tipo_registro, h_nome_arquivo, h_codigo_da_origem, h_data_geracao_do_arquivo, h_reserva) {
 	this.h_tipo_registro = h_tipo_registro;
@@ -62,10 +63,12 @@ class bovespaTrailer {
   }
 };
 
+/* Vetores para guardar as informações */
 var bovespaHeaderData = bovespaHeaderData || [];
 var bovespaCotacaoData = bovespaCotacaoData || [];
 var bovespaTrailerData = bovespaTrailerData || [];
 
+/* Fazendo a leitura do arquivo */
 fs.readFile('resources/COTAHIST_M122016.TXT', function (err, data) {
    
 	/* Tratamento caso dê algum erro ao abrir/ler o arquivo */
@@ -145,10 +148,12 @@ fs.readFile('resources/COTAHIST_M122016.TXT', function (err, data) {
 
 });
 
+/* Rota Padrão */
 app.get ('/', function (request, response){
 	response.sendFile(__dirname + '/views/index.html');
 });
 
+/* Rotas Data para Front */
 app.get('/dataHeader', function(request, response){
 	response.send({bovespaHeaderData});
 });
@@ -161,6 +166,7 @@ app.get('/dataCotacao', function(request, response){
 	response.send({bovespaCotacaoData});
 });
 
+/* Listando APP na porta 3000 */
 app.listen (3000, function(){
 	console.log ('Server running...');
 });

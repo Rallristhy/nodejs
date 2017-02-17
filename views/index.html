@@ -17,16 +17,12 @@
 <body ng-controller="bovespaListController as bovespaList">
 
 	<header>
-		<!--
-		{{dataTrailer.bovespaTrailerData}}
-
-		{{dataCotacao.bovespaCotacaoData[1]}} -->
 		<div class="container">
 			<div class="row rowHeader">
 				<ul>
 					<li ng-repeat="header in dataHeader.bovespaHeaderData">
 						
-						<div class="col-xs-4">
+						<div class="col-sm-4 col-md-4 col-lg-4">
 							<p>
 								<i class="fa fa-arrow-circle-right"></i>
 								<label>Nome do Arquivo: </label>
@@ -35,7 +31,7 @@
 							</p>
 						</div>
 						
-						<div class="col-xs-4">
+						<div class="col-sm-4 col-md-4 col-lg-4">
 							<p>
 								<i class="fa fa-arrow-circle-right"></i>
 								<label>Cod. Origem: </label>
@@ -43,7 +39,7 @@
 							</p>
 						</div>
 
-						<div class="col-xs-4">
+						<div class="col-sm-4 col-md-4 col-lg-4">
 							<p>
 								<i class="fa fa-calendar"></i>
 								<label>Data Geracao: </label>
@@ -51,7 +47,7 @@
 							</p>
 						</div>
 
-						<div class="col-xs-4">
+						<div class="col-sm-4 col-md-4 col-lg-4">
 							<p>
 								<i class="fa fa-arrow-circle-up"></i>
 								<label>Tipo de Registro: </label>
@@ -59,7 +55,7 @@
 							</p>
 						</div>
 
-						<div class="col-xs-8">
+						<div class="col-sm-8 col-md-8 col-lg-8">
 							<p>
 								<i class="fa fa-arrow-circle-up"></i>
 								<label>Reserva: </label>
@@ -72,6 +68,7 @@
 		</div>
 
 	</header>
+
 	<section>
 		<div class="container">
 			<div class="row rowCotacao">
@@ -106,9 +103,10 @@
 				            
 				        </tr>
 				    </tbody>
-
 				</table>
+
 				<dir-pagination-controls max-size="20" boundary-links="true"></dir-pagination-controls>
+
 			</div>
 		</div>
 
@@ -117,6 +115,7 @@
 	</section>
 
 	<footer>
+	
 	</footer>
 
 </body>
