@@ -7,6 +7,8 @@ const server = require('http').createServer(app);
 
 /* Importa o socket.io e passa para seu módulo o server criado */
 const io = require('socket.io')(server);
+io.set('heartbeat timeout', 4000); 
+io.set('heartbeat interval', 2000);
 
 /* Importando File System */
 var fs = require('fs');
@@ -75,7 +77,7 @@ var bovespaCotacaoData = bovespaCotacaoData || [];
 var bovespaTrailerData = bovespaTrailerData || [];
 
 /* Fazendo a leitura do arquivo */
-fs.readFile('resources/COTAHIST_M122016.TXT', function (err, data) {
+fs.readFile('resources/files/COTAHIST_M122016.TXT', function (err, data) {
    
 	/* Tratamento caso dê algum erro ao abrir/ler o arquivo */
 	if (err) {
@@ -172,17 +174,38 @@ app.get('/dataCotacao', function(request, response){
 	response.send({bovespaCotacaoData});
 });
 
-/* Abrino Conexão com o Cliente */
+/* Abrino Conexão com os Clientes */
 io.on('connection', function(socket){
 
 	/*Ip*/
-	console.log(socket.handshake.address+'um usuario entrou');
+	console.log(socket.handshake.address+' entrou...');
+	
+	/* Serviço escutando o Client */
+	socket.on('mensagem', function(msg) {
+		/*
+		* socket.emit Envia envia msg para cada client Conectado
+		* io.sockets.emit('message', msg); envia msg para todos os clientes
+		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
+		*/
+		socket.broadcast.emit('mensagem', msg);
+
+	});
 
 	/* Fecha Conexão com o Cliente */
   	socket.on('disconnect', function(){
-    	console.log(socket.handshake.address+' saiu');
+    	console.log(socket.handshake.address+' saiu...');
   	});
 
+});
+
+fs.readdir('resources/files/',function(error, files){
+	if(error){
+		console.log("Caminho não encontrado!");
+	}
+	else {
+		console.log(files+" Qtd: "+files.length);
+	}
+	
 });
 
 /* Listando APP na porta 3000 */
