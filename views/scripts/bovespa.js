@@ -31,7 +31,9 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
     console.log('Erro ao receber arquivo: ' + data);
   });
 
+  /* Declaração do socketio no cliente */
   var socket = io();
+  
   $scope.names = ["Emil", "Tobias", "Linus"];
 
   $scope.enviarMsg = function(msg){
@@ -45,6 +47,15 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
     $scope.$apply();
   });
   
+  /* Ativa o serviço files entre cliente-servidor */
+  socket.emit("files", "Ativando serviço Files");
+
+  /* Escutando Serviço Files no servidor */
+  socket.on("files", function(msg){
+    console.log(msg);
+
+  });
+
 
 
 }]);

@@ -1,5 +1,5 @@
 /* Importando express */
-const express = require ('express');
+const express = require('express');
 const app = express();
 
 /* Cria um server */
@@ -7,11 +7,15 @@ const server = require('http').createServer(app);
 
 /* Importa o socket.io e passa para seu módulo o server criado */
 const io = require('socket.io')(server);
-io.set('heartbeat timeout', 4000); 
-io.set('heartbeat interval', 2000);
 
 /* Importando File System */
 var fs = require('fs');
+
+/* Tempo em segundos de intervalo de serviço do socketio */
+var time = 100000;
+
+/* Armazena os arquivos contidos na pasta files */
+var varificaArquivos = "";
 
 /* Mapeando caminhos para visibilidade nas views */
 app.use("/bower_components",  express.static(__dirname + '/bower_components'));
@@ -178,7 +182,7 @@ app.get('/dataCotacao', function(request, response){
 io.on('connection', function(socket){
 
 	/*Ip*/
-	console.log(socket.handshake.address+' entrou...');
+	console.log(socket.handshake.address.substring(7, 20)+' entrou...');
 	
 	/* Serviço escutando o Client */
 	socket.on('mensagem', function(msg) {
@@ -191,21 +195,44 @@ io.on('connection', function(socket){
 
 	});
 
+	var intervalId;
+
+	/* Serviço files escutando o Client */
+	socket.on('files', function(msg) {
+		/*
+		* socket.emit Envia envia msg para cada client Conectado
+		* io.sockets.emit('message', msg); envia msg para todos os clientes
+		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
+		*/
+		
+
+		/* Intervalo de ativação do serviço */
+		intervalId = setInterval(function() {
+
+			fs.readdir('resources/files/',function(error, files){
+				
+				if(error){
+					varificaArquivos = ("Caminho não encontrado!");
+				}
+				else {
+					varificaArquivos = files;
+				}
+
+			});
+		
+        	console.log("Chegou aqui no servidor: "+varificaArquivos);
+        	socket.emit('files', varificaArquivos);
+
+		}, time);
+
+	});
+
 	/* Fecha Conexão com o Cliente */
   	socket.on('disconnect', function(){
-    	console.log(socket.handshake.address+' saiu...');
+    	console.log(socket.handshake.address.substring(7, 20)+' saiu...');
+    	clearInterval(intervalId);
   	});
 
-});
-
-fs.readdir('resources/files/',function(error, files){
-	if(error){
-		console.log("Caminho não encontrado!");
-	}
-	else {
-		console.log(files+" Qtd: "+files.length);
-	}
-	
 });
 
 /* Listando APP na porta 3000 */
