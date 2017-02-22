@@ -63,16 +63,6 @@
 								<small>{{header.h_reserva}}</small>
 							</p>
 						</div>
-						<div class="col-xs-8 col-md-8 col-lg-8">
-							<p>
-								<i class="fa fa-files-o"></i>
-								<label>Arquivos: </label>
-								<small>
-									<select class="selectpicker" ng-model="selectedName" ng-options="x for x in names">
-									</select>
-								</small>
-							</p>
-						</div>
 					</li>
 				</ul>
 			</div>
@@ -81,7 +71,20 @@
 	</header>
 
 	<section>
-		<div class="container">
+
+		<div class="container selecionaArquivo">
+			<div class="row">
+				<p>
+					<i class="fa fa-files-o"></i>
+					<label>Arquivos: </label>
+					<small>
+						<select class="selectpicker" ng-model="selecionaArquivo" ng-options="x for x in arquivos" ng-change="capturaArquivoSelecionado(selecionaArquivo)">
+						</select>
+					</small>
+				</p>
+			</div>
+		</div>
+		<div class="container sectiontable">
 			<div class="row rowCotacao">
 
 				<table class="table">
@@ -121,14 +124,11 @@
 			</div>
 		</div>
 
-	
-
 	</section>
 
 	<footer>
 		
-		
-		<nav class="navbar navbar-inverse navbar-fixed-bottom">
+		<nav class="navbar navbar-inverse">
 			<br>
 			<div class="container">
 				<div class="col-md-10">
@@ -144,6 +144,7 @@
 			</div>
 			<br>
 		</nav>
+
 	</footer>
 
 </body>

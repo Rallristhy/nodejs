@@ -11,11 +11,11 @@ const io = require('socket.io')(server);
 /* Importando File System */
 var fs = require('fs');
 
-/* Tempo em segundos de intervalo de serviço do socketio */
-var time = 100000;
+/* Tempo em segundos de intervalo de serviço do socketio 60000 = 1 min 1000 = 1s */
+var time = 5000;
 
 /* Armazena os arquivos contidos na pasta files */
-var varificaArquivos = "";
+var verificaArquivos = "";
 
 /* Mapeando caminhos para visibilidade nas views */
 app.use("/bower_components",  express.static(__dirname + '/bower_components'));
@@ -195,33 +195,63 @@ io.on('connection', function(socket){
 
 	});
 
-	var intervalId;
+	var interval;
 
-	/* Serviço files escutando o Client */
+	/* 
+	* Serviço filesCargaInicial escutando o Client 
+	* Esse serviço foi criado para fazer a carga inicial dos arquivos
+	*/
+	socket.on('filesCargaInicial', function(msg) {
+
+		/* Faz a leitura da pasta */
+		fs.readdir('resources/files/',function(error, files){
+				
+			if(error){
+				verificaArquivos = ("Caminho não encontrado!");
+			}
+			else {
+				verificaArquivos = files;
+			}
+
+		});
+
+		/* Envia mensagem para o cliente */
+		socket.emit('filesCargaInicial', verificaArquivos);
+
+	});
+
+	/* 
+	* Serviço files escutando o Client
+	* Serviço criado e ativado frequentemente através do setInterval(variável time) 
+	*/
 	socket.on('files', function(msg) {
 		/*
 		* socket.emit Envia envia msg para cada client Conectado
 		* io.sockets.emit('message', msg); envia msg para todos os clientes
 		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
 		*/
-		
 
-		/* Intervalo de ativação do serviço */
-		intervalId = setInterval(function() {
+		/* 
+		* Intervalo de ativação do serviço 
+		*/
+		interval = setInterval(function() {
 
+			/* Faz a leitura da pasta */
 			fs.readdir('resources/files/',function(error, files){
 				
 				if(error){
-					varificaArquivos = ("Caminho não encontrado!");
+					verificaArquivos = ("Caminho não encontrado!");
 				}
 				else {
-					varificaArquivos = files;
+					verificaArquivos = files;
 				}
 
 			});
 		
-        	console.log("Chegou aqui no servidor: "+varificaArquivos);
-        	socket.emit('files', varificaArquivos);
+        	//console.log("Chegou aqui no servidor: "+verificaArquivos);
+
+        	/* Envia mensagem para o cliente */
+        	socket.emit('files', verificaArquivos);
 
 		}, time);
 
@@ -230,7 +260,8 @@ io.on('connection', function(socket){
 	/* Fecha Conexão com o Cliente */
   	socket.on('disconnect', function(){
     	console.log(socket.handshake.address.substring(7, 20)+' saiu...');
-    	clearInterval(intervalId);
+    	/* reseta o Interval */
+    	clearInterval(interval);
   	});
 
 });

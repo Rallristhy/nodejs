@@ -33,27 +33,44 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
 
   /* Declaração do socketio no cliente */
   var socket = io();
-  
-  $scope.names = ["Emil", "Tobias", "Linus"];
 
+  /******* Serviço de CHAT *******/
   $scope.enviarMsg = function(msg){
     socket.emit("mensagem", msg);
     //console.log(bovespaList.msg);
-  };
+  }; 
 
   socket.on("mensagem", function(msg){
     $scope.bovespaList.msgs = msg;
     /* Atualiza models */
     $scope.$apply();
   });
-  
-  /* Ativa o serviço files entre cliente-servidor */
-  socket.emit("files", "Ativando serviço Files");
 
+  /******* Serviço de Arquivos *******/
+  $scope.capturaArquivoSelecionado = function(nome_arquivo){
+    console.log(nome_arquivo);
+  };
+  
+  /* Envia msg para o servidor */
+  socket.emit("filesCargaInicial");
+  socket.emit("files");
+
+  /* Escutando Serviço filesCargaInicial no servidor */
+  socket.on("filesCargaInicial", function(msg){
+    /* recebe os arquivos do servidor e envia para SELECT */
+    $scope.arquivos = msg;
+    /* Atualiza models */
+    $scope.$apply();
+    //console.log(msg);
+  });
+  
   /* Escutando Serviço Files no servidor */
   socket.on("files", function(msg){
-    console.log(msg);
-
+    /* recebe os arquivos do servidor e envia para SELECT */
+    $scope.arquivos = msg;
+    /* Atualiza models */
+    $scope.$apply();
+    //console.log(msg);
   });
 
 
