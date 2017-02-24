@@ -79,20 +79,33 @@ class bovespaTrailer {
 var bovespaHeaderData = bovespaHeaderData || [];
 var bovespaCotacaoData = bovespaCotacaoData || [];
 var bovespaTrailerData = bovespaTrailerData || [];
+var files = files || [];
 
 var chokidar = require('chokidar');
 
 var watcher = chokidar.watch('resources/files/', {ignored: /^\./, persistent: true});
 
-watcher.on('add', function(path) {
+watcher.on('change', function(path) {
 	console.log(path.substring(16));
-})
+});
+
+/*
   .on('change', function(path) {console.log('File', path, 'has been changed');})
   .on('unlink', function(path) {console.log('File', path, 'has been removed');})
   .on('error', function(error) {console.error('Error happened', error);})
+*/
+io.on('connection', function(socket){
 
+	socket.on('files', function(msg) {
 
+		watcher.on('add', function(file, event) {
+			files.push(file);
+			socket.emit('files', files);
+		});
+		
+	});
 
+});
 /* Fazendo a leitura do arquivo */
 fs.readFile('resources/files/COTAHIST_M122016.TXT', function (err, data) {
    
@@ -192,92 +205,67 @@ app.get('/dataCotacao', function(request, response){
 });
 
 /* Abrino Conexão com os Clientes */
-io.on('connection', function(socket){
+// io.on('connection', function(socket){
 
-	/*Ip*/
-	console.log(socket.handshake.address.substring(7, 20)+' entrou...');
+// 	/*Ip*/
+// 	console.log(socket.handshake.address.substring(7, 20)+' entrou...');
 	
-	/* Serviço escutando o Client */
-	socket.on('mensagem', function(msg) {
-		/*
-		* socket.emit Envia envia msg para cada client Conectado
-		* io.sockets.emit('message', msg); envia msg para todos os clientes
-		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
-		*/
-		socket.broadcast.emit('mensagem', msg);
+// 	/* Serviço escutando o Client */
+// 	socket.on('mensagem', function(msg) {
+// 		/*
+// 		* socket.emit Envia envia msg para cada client Conectado
+// 		* io.sockets.emit('message', msg); envia msg para todos os clientes
+// 		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
+// 		*/
+// 		socket.broadcast.emit('mensagem', msg);
 
-	});
+// 	});
 
-	var interval;
+// 	var interval;
 
-	/* 
-	* Serviço filesCargaInicial escutando o Client 
-	* Esse serviço foi criado para fazer a carga inicial dos arquivos
-	*/
-	socket.on('filesCargaInicial', function(msg) {
+// 	/* 
+// 	* Serviço filesCargaInicial escutando o Client 
+// 	* Esse serviço foi criado para fazer a carga inicial dos arquivos
+// 	*/
+// 	socket.on('filesCargaInicial', function(msg) {
 
-		/* Faz a leitura da pasta */
-		fs.readdir('resources/files/',function(error, files){
+// 		/* Faz a leitura da pasta */
+// 		fs.readdir('resources/files/',function(error, files){
 				
-			if(error){
-				verificaArquivos = ("Caminho não encontrado!");
-			}
-			else {
-				verificaArquivos = files;
-			}
+// 			if(error){
+// 				verificaArquivos = ("Caminho não encontrado!");
+// 			}
+// 			else {
+// 				verificaArquivos = files;
+// 			}
 
-		});
+// 		});
 
-		/* Envia mensagem para o cliente */
-		socket.emit('filesCargaInicial', verificaArquivos);
+// 		/* Envia mensagem para o cliente */
+// 		socket.emit('filesCargaInicial', verificaArquivos);
 
-	});
+// 	});
 
-	/* 
-	* Serviço files escutando o Client
-	* Serviço criado e ativado frequentemente através do setInterval(variável time) 
-	*/
-	socket.on('files', function(msg) {
-		/*
-		* socket.emit Envia envia msg para cada client Conectado
-		* io.sockets.emit('message', msg); envia msg para todos os clientes
-		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
-		*/
+// 	/* 
+// 	* Serviço files escutando o Client
+// 	* Serviço criado e ativado frequentemente através do setInterval(variável time) 
+// 	*/
+// 	socket.on('files', function(msg) {
+// 		/*
+// 		* socket.emit Envia envia msg para cada client Conectado
+// 		* io.sockets.emit('message', msg); envia msg para todos os clientes
+// 		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
+// 		*/
+// 		console.log(vetorTeste);
+// 		socket.emit('files', vetorTeste);
+// 	});
 
-		/* 
-		* Intervalo de ativação do serviço 
-		*/
-		interval = setInterval(function() {
+// 	/* Fecha Conexão com o Cliente */
+//   	socket.on('disconnect', function(){
+//     	console.log(socket.handshake.address.substring(7, 20)+' saiu...');
+//   	});
 
-			/* Faz a leitura da pasta */
-			fs.readdir('resources/files/',function(error, files){
-				
-				if(error){
-					verificaArquivos = ("Caminho não encontrado!");
-				}
-				else {
-					verificaArquivos = files;
-				}
-
-			});
-		
-        	//console.log("Chegou aqui no servidor: "+verificaArquivos);
-
-        	/* Envia mensagem para o cliente */
-        	socket.emit('files', verificaArquivos);
-
-		}, time);
-
-	});
-
-	/* Fecha Conexão com o Cliente */
-  	socket.on('disconnect', function(){
-    	console.log(socket.handshake.address.substring(7, 20)+' saiu...');
-    	/* reseta o Interval */
-    	clearInterval(interval);
-  	});
-
-});
+// });
 
 /* Listando APP na porta 3000 */
 server.listen (3000, function(){

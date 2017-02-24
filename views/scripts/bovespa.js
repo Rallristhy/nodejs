@@ -67,10 +67,10 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
   /* Escutando Serviço Files no servidor */
   socket.on("files", function(msg){
     /* recebe os arquivos do servidor e envia para SELECT */
-    $scope.arquivos = msg;
+    //$scope.arquivos = msg;
     /* Atualiza models */
-    $scope.$apply();
-    //console.log(msg);
+    //$scope.$apply();
+    console.log(msg);
   });
 
 
