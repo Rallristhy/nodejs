@@ -8,7 +8,7 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
       $scope.dataHeader = data.data;
 
   }, function errorCallback(response) {
-    console.log('Erro ao receber arquivo: ' + data);
+    console.log('Erro ao receber arquivo: ' + response);
   });
 
   /* Buscar Informações da rota /dataCotacao no servidor */

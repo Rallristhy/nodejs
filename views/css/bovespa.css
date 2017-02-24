@@ -14,10 +14,16 @@
 /* Style Header */
 header {
 	width: 100%; /*Pegar a largura da tela inteira*/
-	height: 150px;
-	background-color: rgba(9, 79, 125, .9);
+	height: 130px;
+	/*background-color: rgba(9, 79, 125, .1);
+	background-color: #2C3E50;
+	background-image: linear-gradient(to right, black, #1c281f, black, #396337); 	
+	background: linear-gradient(to bottom, #1c281f 56%, #396337 100%);*/
+	background: linear-gradient(to right, black, rgba(9, 79, 125, .9) 30%, black  100%);
 	z-index: 2; /*Trazer para frente*/
 	position: fixed;
+	border-radius:4px;
+	/*border:0.1px solid white;*/
 }
 
 header .container {
@@ -49,7 +55,7 @@ header li {
 
 section {
 	position: relative;
-	padding-top: 150px;
+	padding-top: 130px;
 	
 }
 
@@ -66,9 +72,38 @@ section .selecionaArquivo {
 
 }
 
-section .sectiontable {
-	padding-top: 55px;
+section .table{
+	padding-top: 128px;
+	border-radius:4px;
+	border:1px solid white;
 
+
+}
+section .table{
+	background: linear-gradient(to left, white, white );
+}
+tr td{
+	border-radius:1px;
+	border:1px solid black;
+	background:#FFF;
+}
+
+tr:hover td {
+	background: #00688B;
+	color: white; 
+	
+}
+
+section .thead-inverse{
+	color: white;
+	background-color: green;
+
+}
+
+section .rowCotacao{
+	
+	padding-top: 60px;
+	
 }
 
 section select{
