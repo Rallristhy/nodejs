@@ -80,6 +80,19 @@ var bovespaHeaderData = bovespaHeaderData || [];
 var bovespaCotacaoData = bovespaCotacaoData || [];
 var bovespaTrailerData = bovespaTrailerData || [];
 
+var chokidar = require('chokidar');
+
+var watcher = chokidar.watch('resources/files/', {ignored: /^\./, persistent: true});
+
+watcher.on('add', function(path) {
+	console.log(path.substring(16));
+})
+  .on('change', function(path) {console.log('File', path, 'has been changed');})
+  .on('unlink', function(path) {console.log('File', path, 'has been removed');})
+  .on('error', function(error) {console.error('Error happened', error);})
+
+
+
 /* Fazendo a leitura do arquivo */
 fs.readFile('resources/files/COTAHIST_M122016.TXT', function (err, data) {
    
