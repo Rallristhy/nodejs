@@ -1,6 +1,7 @@
 /* Importando express */
 const express = require('express');
 const app = express();
+const bodyParser = require ('body-parser');
 
 /* Cria um server */
 const server = require('http').createServer(app);
@@ -20,10 +21,13 @@ app.use("/node_modules",  express.static(__dirname + '/node_modules'));
 app.use("/views",  express.static(__dirname + '/views'));
 app.use("/resources",  express.static(__dirname + '/resources'));
 
+app.use (bodyParser.urlencoded({extended  : true}));
+
 /* Vetores para guardar as informações */
 var bovespaHeaderData = bovespaHeaderData || [];
 var bovespaCotacaoData = bovespaCotacaoData || [];
 var bovespaTrailerData = bovespaTrailerData || [];
+var bovespaData = bovespaData || [];
 var arquivosData = arquivosData || [];
 
 /* Variável que guarda o diretorio dos arquivos */
@@ -140,6 +144,97 @@ io.on('connection', function(socket){
 			
 	});
 
+	socket.on('arquivoSelecionado', function(arquivo) {
+
+		fs.readFile(dirArquivos+arquivo, function (err, data) {
+   			bovespaData = [];
+   			bovespaHeaderData = [];
+   			bovespaCotacaoData = [];
+   			bovespaTrailerData = [];
+
+			/* Tratamento caso dê algum erro ao abrir/ler o arquivo */
+			if (err) {
+				return console.error(err);
+			}
+
+		   	/*Convertendo informação do arquivo em string*/
+		   	var text = data.toString();
+
+		   	/*Quebra linha a linha e quarda em um vetor*/
+		   	var lines = text.split( '\n' );
+
+		   	/*Percorrendo linha a linha do Arquivo*/
+		   	lines.forEach(function ( line ) {
+
+		  		/*Fazendo a leitura do Header*/
+				if (line.substring(0, 2) == '00'){
+					var h_tipo_registro = line.substring(0, 2);
+				 	var h_nome_arquivo = line.substring(2, 15);
+				 	var h_codigo_da_origem = line.substring(15, 23);
+				 	var h_data_geracao_do_arquivo = line.substring(23, 31);
+				 	var h_reserva = line.substring(31, 245);
+				 	
+				 	var bovespah = new bovespaHeader(h_tipo_registro, h_nome_arquivo, h_codigo_da_origem, h_data_geracao_do_arquivo, h_reserva);
+					bovespaHeaderData.push(bovespah);
+					
+				}
+
+				/*Fazendo a leitura do Cotações*/
+				else if (line.substring(0, 2) == '01'){
+					var c_tipo_registro = parseInt(line.substring(0, 2));
+					var c_data_do_pregao = parseInt(line.substring(2, 10));
+					var c_codigo_bdi = line.substring(10, 12);
+					var c_codigo_de_negociacao_do_papel = line.substring(12, 24);
+					var c_tipo_de_mercado = line.substring(24, 27);
+					var c_nomres = line.substring(27, 39);
+					var c_especificacao_do_papel = line.substring(39, 49);
+					var c_prazot = line.substring(49, 52);
+					var c_moeda_de_referencia = line.substring(52, 56);
+					var c_preabe = (parseInt((line.substring(56, 69)))/100).toFixed(2);
+					var c_premax = line.substring(69, 82);
+					var c_premin = line.substring(82, 95);
+					var c_premed = line.substring(95, 108);
+					var c_preult = line.substring(108, 121);
+					var c_preofc = line.substring(121, 134);
+					var c_preofv = line.substring(134, 147);
+					var c_totneg = line.substring(147, 152);
+					var c_quatot = line.substring(152, 170);
+					var c_voltot = line.substring(170, 188);
+					var c_preexe = line.substring(188, 201);
+					var c_idopc = line.substring(201, 202);
+					var c_datven = line.substring(202, 210);
+					var c_fatcot = line.substring(210, 217);
+					var c_ptoexe = line.substring(217, 230);
+					var c_codisi = line.substring(230, 242);
+					var c_dismes = line.substring(242, 245);
+
+					var bovespac = new bovespaCotacao(c_tipo_registro, c_data_do_pregao, c_codigo_bdi, c_codigo_de_negociacao_do_papel, c_tipo_de_mercado, c_nomres, c_especificacao_do_papel, c_prazot, c_moeda_de_referencia, c_preabe, c_premax, c_premin, c_premed, c_preult, c_preofc, c_preofv, c_totneg, c_quatot, c_voltot, c_preexe, c_idopc , c_datven, c_fatcot, c_ptoexe, c_codisi, c_dismes);
+					bovespaCotacaoData.push(bovespac);
+				}
+
+				/*Fazendo a leitura do Trailer*/
+				else if (line.substring(0, 2) == '99'){
+					var t_tipo_registro = line.substring(0, 2);
+					var t_nome_arquivo = line.substring(2, 15);
+					var t_codigo_da_origem = line.substring(15, 23);
+					var t_data_geracao_do_arquivo = line.substring(23, 31);
+					var t_total_registros = parseInt(line.substring(31, 42));
+					var t_reserva = line.substring(42, 245);
+
+					var bovespat = new bovespaTrailer(t_tipo_registro, t_nome_arquivo, t_codigo_da_origem, t_data_geracao_do_arquivo, t_total_registros, t_reserva);
+					bovespaTrailerData.push(bovespat);
+				}
+				
+
+			});
+			bovespaData.push(bovespaHeaderData);
+			bovespaData.push(bovespaCotacaoData);
+			bovespaData.push(bovespaTrailerData);
+		   	socket.emit('arquivoSelecionado', bovespaData);
+		});
+
+	});	
+
 	/* Fechando Conexão entre Cliente-Servidor */
    	socket.on('disconnect', function(){
 
@@ -148,85 +243,86 @@ io.on('connection', function(socket){
    	});
 
 });
-/* Fazendo a leitura do arquivo */
-fs.readFile(dirArquivos+'COTAHIST_M122016.TXT', function (err, data) {
+
+// /* Fazendo a leitura do arquivo */
+// fs.readFile(dirArquivos+'COTAHIST_M122016.TXT', function (err, data) {
    
-	/* Tratamento caso dê algum erro ao abrir/ler o arquivo */
-	if (err) {
-		return console.error(err);
-	}
+// 	/* Tratamento caso dê algum erro ao abrir/ler o arquivo */
+// 	if (err) {
+// 		return console.error(err);
+// 	}
 
-   	/*Convertendo informação do arquivo em string*/
-   	var text = data.toString();
+//    	/*Convertendo informação do arquivo em string*/
+//    	var text = data.toString();
 
-   	/*Quebra linha a linha e quarda em um vetor*/
-   	var lines = text.split( '\n' );
+//    	/*Quebra linha a linha e quarda em um vetor*/
+//    	var lines = text.split( '\n' );
 
-   	/*Percorrendo linha a linha do Arquivo*/
-   	lines.forEach(function ( line ) {
+//    	/*Percorrendo linha a linha do Arquivo*/
+//    	lines.forEach(function ( line ) {
 
-  		/*Fazendo a leitura do Header*/
-		if (line.substring(0, 2) == '00'){
-			var h_tipo_registro = line.substring(0, 2);
-		 	var h_nome_arquivo = line.substring(2, 15);
-		 	var h_codigo_da_origem = line.substring(15, 23);
-		 	var h_data_geracao_do_arquivo = line.substring(23, 31);
-		 	var h_reserva = line.substring(31, 245);
+//   		/*Fazendo a leitura do Header*/
+// 		if (line.substring(0, 2) == '00'){
+// 			var h_tipo_registro = line.substring(0, 2);
+// 		 	var h_nome_arquivo = line.substring(2, 15);
+// 		 	var h_codigo_da_origem = line.substring(15, 23);
+// 		 	var h_data_geracao_do_arquivo = line.substring(23, 31);
+// 		 	var h_reserva = line.substring(31, 245);
 		 	
-		 	var bovespah = new bovespaHeader(h_tipo_registro, h_nome_arquivo, h_codigo_da_origem, h_data_geracao_do_arquivo, h_reserva);
-			bovespaHeaderData.push(bovespah);
+// 		 	var bovespah = new bovespaHeader(h_tipo_registro, h_nome_arquivo, h_codigo_da_origem, h_data_geracao_do_arquivo, h_reserva);
+// 			bovespaHeaderData.push(bovespah);
 			
-		}
+// 		}
 		
-		/*Fazendo a leitura do Cotações*/
-		else if (line.substring(0, 2) == '01'){
-			var c_tipo_registro = parseInt(line.substring(0, 2));
-			var c_data_do_pregao = parseInt(line.substring(2, 10));
-			var c_codigo_bdi = line.substring(10, 12);
-			var c_codigo_de_negociacao_do_papel = line.substring(12, 24);
-			var c_tipo_de_mercado = line.substring(24, 27);
-			var c_nomres = line.substring(27, 39);
-			var c_especificacao_do_papel = line.substring(39, 49);
-			var c_prazot = line.substring(49, 52);
-			var c_moeda_de_referencia = line.substring(52, 56);
-			var c_preabe = (parseInt((line.substring(56, 69)))/100).toFixed(2);
-			var c_premax = line.substring(69, 82);
-			var c_premin = line.substring(82, 95);
-			var c_premed = line.substring(95, 108);
-			var c_preult = line.substring(108, 121);
-			var c_preofc = line.substring(121, 134);
-			var c_preofv = line.substring(134, 147);
-			var c_totneg = line.substring(147, 152);
-			var c_quatot = line.substring(152, 170);
-			var c_voltot = line.substring(170, 188);
-			var c_preexe = line.substring(188, 201);
-			var c_idopc = line.substring(201, 202);
-			var c_datven = line.substring(202, 210);
-			var c_fatcot = line.substring(210, 217);
-			var c_ptoexe = line.substring(217, 230);
-			var c_codisi = line.substring(230, 242);
-			var c_dismes = line.substring(242, 245);
+// 		/*Fazendo a leitura do Cotações*/
+// 		else if (line.substring(0, 2) == '01'){
+// 			var c_tipo_registro = parseInt(line.substring(0, 2));
+// 			var c_data_do_pregao = parseInt(line.substring(2, 10));
+// 			var c_codigo_bdi = line.substring(10, 12);
+// 			var c_codigo_de_negociacao_do_papel = line.substring(12, 24);
+// 			var c_tipo_de_mercado = line.substring(24, 27);
+// 			var c_nomres = line.substring(27, 39);
+// 			var c_especificacao_do_papel = line.substring(39, 49);
+// 			var c_prazot = line.substring(49, 52);
+// 			var c_moeda_de_referencia = line.substring(52, 56);
+// 			var c_preabe = (parseInt((line.substring(56, 69)))/100).toFixed(2);
+// 			var c_premax = line.substring(69, 82);
+// 			var c_premin = line.substring(82, 95);
+// 			var c_premed = line.substring(95, 108);
+// 			var c_preult = line.substring(108, 121);
+// 			var c_preofc = line.substring(121, 134);
+// 			var c_preofv = line.substring(134, 147);
+// 			var c_totneg = line.substring(147, 152);
+// 			var c_quatot = line.substring(152, 170);
+// 			var c_voltot = line.substring(170, 188);
+// 			var c_preexe = line.substring(188, 201);
+// 			var c_idopc = line.substring(201, 202);
+// 			var c_datven = line.substring(202, 210);
+// 			var c_fatcot = line.substring(210, 217);
+// 			var c_ptoexe = line.substring(217, 230);
+// 			var c_codisi = line.substring(230, 242);
+// 			var c_dismes = line.substring(242, 245);
 
-			var bovespac = new bovespaCotacao(c_tipo_registro, c_data_do_pregao, c_codigo_bdi, c_codigo_de_negociacao_do_papel, c_tipo_de_mercado, c_nomres, c_especificacao_do_papel, c_prazot, c_moeda_de_referencia, c_preabe, c_premax, c_premin, c_premed, c_preult, c_preofc, c_preofv, c_totneg, c_quatot, c_voltot, c_preexe, c_idopc , c_datven, c_fatcot, c_ptoexe, c_codisi, c_dismes);
-			bovespaCotacaoData.push(bovespac);
-		}
+// 			var bovespac = new bovespaCotacao(c_tipo_registro, c_data_do_pregao, c_codigo_bdi, c_codigo_de_negociacao_do_papel, c_tipo_de_mercado, c_nomres, c_especificacao_do_papel, c_prazot, c_moeda_de_referencia, c_preabe, c_premax, c_premin, c_premed, c_preult, c_preofc, c_preofv, c_totneg, c_quatot, c_voltot, c_preexe, c_idopc , c_datven, c_fatcot, c_ptoexe, c_codisi, c_dismes);
+// 			bovespaCotacaoData.push(bovespac);
+// 		}
 
-		/*Fazendo a leitura do Trailer*/
-		else if (line.substring(0, 2) == '99'){
-			var t_tipo_registro = line.substring(0, 2);
-			var t_nome_arquivo = line.substring(2, 15);
-			var t_codigo_da_origem = line.substring(15, 23);
-			var t_data_geracao_do_arquivo = line.substring(23, 31);
-			var t_total_registros = parseInt(line.substring(31, 42));
-			var t_reserva = line.substring(42, 245);
+// 		/*Fazendo a leitura do Trailer*/
+// 		else if (line.substring(0, 2) == '99'){
+// 			var t_tipo_registro = line.substring(0, 2);
+// 			var t_nome_arquivo = line.substring(2, 15);
+// 			var t_codigo_da_origem = line.substring(15, 23);
+// 			var t_data_geracao_do_arquivo = line.substring(23, 31);
+// 			var t_total_registros = parseInt(line.substring(31, 42));
+// 			var t_reserva = line.substring(42, 245);
 
-			var bovespat = new bovespaTrailer(t_tipo_registro, t_nome_arquivo, t_codigo_da_origem, t_data_geracao_do_arquivo, t_total_registros, t_reserva);
-			bovespaTrailerData.push(bovespat);
-		}
+// 			var bovespat = new bovespaTrailer(t_tipo_registro, t_nome_arquivo, t_codigo_da_origem, t_data_geracao_do_arquivo, t_total_registros, t_reserva);
+// 			bovespaTrailerData.push(bovespat);
+// 		}
 
-	});
+// 	});
 
-});
+// });
 
 /* Rota Padrão */
 app.get ('/', function (request, response){
@@ -239,17 +335,23 @@ app.get('/filesCargaInicial', function(request, response){
 });
 
 /* Rotas Data para Front */
-app.get('/dataHeader', function(request, response){
-	response.send({bovespaHeaderData});
-});
+// app.post('/teste', function(request, response){
+// 	console.log(request.body);
+// 	response.redirect('/');
+// });
 
-app.get('/dataTrailer', function(request, response){
-	response.send({bovespaTrailerData});
-});
+// /* Rotas Data para Front */
+// app.get('/dataHeader', function(request, response){
+// 	response.send({bovespaHeaderData});
+// });
 
-app.get('/dataCotacao', function(request, response){
-	response.send({bovespaCotacaoData});
-});
+// app.get('/dataTrailer', function(request, response){
+// 	response.send({bovespaTrailerData});
+// });
+
+// app.get('/dataCotacao', function(request, response){
+// 	response.send({bovespaCotacaoData});
+// });
 
 /* Listando APP na porta 3000 */
 server.listen (3000, function(){
