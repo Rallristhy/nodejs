@@ -9,18 +9,28 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 /* Importando File System */
-var fs = require('fs');
+const fs = require('fs');
 
-/* Tempo em segundos de intervalo de serviço do socketio 60000 = 1 min 1000 = 1s */
-var time = 5000;
-
-/* Armazena os arquivos contidos na pasta files */
-var verificaArquivos = "";
+/* Importando Componente responsável pela manipulação e monitoração de pastas e arquivos */
+const chokidar = require('chokidar');
 
 /* Mapeando caminhos para visibilidade nas views */
 app.use("/bower_components",  express.static(__dirname + '/bower_components'));
 app.use("/node_modules",  express.static(__dirname + '/node_modules'));
 app.use("/views",  express.static(__dirname + '/views'));
+app.use("/resources",  express.static(__dirname + '/resources'));
+
+/* Vetores para guardar as informações */
+var bovespaHeaderData = bovespaHeaderData || [];
+var bovespaCotacaoData = bovespaCotacaoData || [];
+var bovespaTrailerData = bovespaTrailerData || [];
+var arquivosData = arquivosData || [];
+
+/* Variável que guarda o diretorio dos arquivos */
+var dirArquivos = "resources/files/";
+
+/* Declação do monitor de diretório */
+var monitor = chokidar.watch(dirArquivos, { ignored: /^\./, persistent: true });
 
 /* Criando Objetos para guardar as informações do  */
 class bovespaHeader {
@@ -75,39 +85,71 @@ class bovespaTrailer {
   }
 };
 
-/* Vetores para guardar as informações */
-var bovespaHeaderData = bovespaHeaderData || [];
-var bovespaCotacaoData = bovespaCotacaoData || [];
-var bovespaTrailerData = bovespaTrailerData || [];
-var files = files || [];
+/* Faz a leitura da pasta para uma Carga Inicial no vetor arquivosData */
+fs.readdir(dirArquivos, function(erro, arquivos){
+	
+	/* Se não encontrar o diretório retorna o erro para o servidor */
+	if(erro){
+		console.log("Caminho não encontrado! "+erro);
+	}
 
-var chokidar = require('chokidar');
+	/* Guarda os arquivos do diretório no vetor "arquivosData" */
+	else {
+		arquivos.forEach(function (arquivo) {
+			arquivosData.push(arquivo);
+		});
+	}
 
-var watcher = chokidar.watch('resources/files/', {ignored: /^\./, persistent: true});
-
-watcher.on('change', function(path) {
-	console.log(path.substring(16));
 });
 
-/*
-  .on('change', function(path) {console.log('File', path, 'has been changed');})
-  .on('unlink', function(path) {console.log('File', path, 'has been removed');})
-  .on('error', function(error) {console.error('Error happened', error);})
-*/
+/* Estabelecendo comunicação socketIO */
 io.on('connection', function(socket){
 
-	socket.on('files', function(msg) {
+	/* Informa ao servidor o IP que conectou na aplicação */
+ 	console.log(socket.handshake.address.substring(7, 20)+" ID: "+socket.id+" entrou...");
 
-		watcher.on('add', function(file, event) {
-			files.push(file);
-			socket.emit('files', files);
+	socket.on('serviceMonitorArquivos', function(msg) {
+
+		console.log(msg);
+
+		/* Monitora novos arquivos */
+		monitor.on('add', function(novoArquivo) {
+
+			/* Armazena no vetor o novo arquivo ignorando o caminho completo */
+			arquivosData.push(novoArquivo.substring(dirArquivos.length));
+
+			/* Envia o para o cliente o vetor atualizado*/
+			socket.emit('serviceMonitorArquivos', arquivosData);
+
 		});
-		
+
+		/* Monitora arquivos excluídos */
+		monitor.on('unlink', function(excluiArquivo) {
+
+			/* Procura o arquivo excluído e remove do vetor */
+			arquivosData.forEach(function (arquivo, indice) {
+				if (arquivo == excluiArquivo.substring(dirArquivos.length)){
+					arquivosData.splice(indice, 1);
+				}
+			});
+
+			/* Envia o para o cliente o vetor atualizado*/
+			socket.emit('serviceMonitorArquivos', arquivosData);
+
+		});
+			
 	});
+
+	/* Fechando Conexão entre Cliente-Servidor */
+   	socket.on('disconnect', function(){
+
+   		/* Informa ao servidor o IP que desconectou na aplicação */
+     	console.log(socket.handshake.address.substring(7, 20)+" ID: "+socket.id+' saiu...');
+   	});
 
 });
 /* Fazendo a leitura do arquivo */
-fs.readFile('resources/files/COTAHIST_M122016.TXT', function (err, data) {
+fs.readFile(dirArquivos+'COTAHIST_M122016.TXT', function (err, data) {
    
 	/* Tratamento caso dê algum erro ao abrir/ler o arquivo */
 	if (err) {
@@ -192,6 +234,11 @@ app.get ('/', function (request, response){
 });
 
 /* Rotas Data para Front */
+app.get('/filesCargaInicial', function(request, response){
+	response.send(arquivosData);
+});
+
+/* Rotas Data para Front */
 app.get('/dataHeader', function(request, response){
 	response.send({bovespaHeaderData});
 });
@@ -203,69 +250,6 @@ app.get('/dataTrailer', function(request, response){
 app.get('/dataCotacao', function(request, response){
 	response.send({bovespaCotacaoData});
 });
-
-/* Abrino Conexão com os Clientes */
-// io.on('connection', function(socket){
-
-// 	/*Ip*/
-// 	console.log(socket.handshake.address.substring(7, 20)+' entrou...');
-	
-// 	/* Serviço escutando o Client */
-// 	socket.on('mensagem', function(msg) {
-// 		/*
-// 		* socket.emit Envia envia msg para cada client Conectado
-// 		* io.sockets.emit('message', msg); envia msg para todos os clientes
-// 		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
-// 		*/
-// 		socket.broadcast.emit('mensagem', msg);
-
-// 	});
-
-// 	var interval;
-
-// 	/* 
-// 	* Serviço filesCargaInicial escutando o Client 
-// 	* Esse serviço foi criado para fazer a carga inicial dos arquivos
-// 	*/
-// 	socket.on('filesCargaInicial', function(msg) {
-
-// 		/* Faz a leitura da pasta */
-// 		fs.readdir('resources/files/',function(error, files){
-				
-// 			if(error){
-// 				verificaArquivos = ("Caminho não encontrado!");
-// 			}
-// 			else {
-// 				verificaArquivos = files;
-// 			}
-
-// 		});
-
-// 		/* Envia mensagem para o cliente */
-// 		socket.emit('filesCargaInicial', verificaArquivos);
-
-// 	});
-
-// 	/* 
-// 	* Serviço files escutando o Client
-// 	* Serviço criado e ativado frequentemente através do setInterval(variável time) 
-// 	*/
-// 	socket.on('files', function(msg) {
-// 		/*
-// 		* socket.emit Envia envia msg para cada client Conectado
-// 		* io.sockets.emit('message', msg); envia msg para todos os clientes
-// 		* socket.broadcast.emit('message', msg); envia msg para todos menos para o cliente original
-// 		*/
-// 		console.log(vetorTeste);
-// 		socket.emit('files', vetorTeste);
-// 	});
-
-// 	/* Fecha Conexão com o Cliente */
-//   	socket.on('disconnect', function(){
-//     	console.log(socket.handshake.address.substring(7, 20)+' saiu...');
-//   	});
-
-// });
 
 /* Listando APP na porta 3000 */
 server.listen (3000, function(){
