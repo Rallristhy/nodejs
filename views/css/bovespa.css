@@ -11,19 +11,16 @@
 	font-size: 1em; /*em medida relativa para modile tbm*/
 }
 
+body {
+	background: #E8E8E8;
+}
 /* Style Header */
 header {
 	width: 100%; /*Pegar a largura da tela inteira*/
-	height: 130px;
-	/*background-color: rgba(9, 79, 125, .1);
-	background-color: #2C3E50;
-	background-image: linear-gradient(to right, black, #1c281f, black, #396337); 	
-	background: linear-gradient(to bottom, #1c281f 56%, #396337 100%);*/
+	height: 145px;
 	background: linear-gradient(to right, black, rgba(9, 79, 125, .9) 30%, black  100%);
 	z-index: 2; /*Trazer para frente*/
 	position: fixed;
-	border-radius:4px;
-	/*border:0.1px solid white;*/
 }
 
 header .container {
@@ -31,31 +28,26 @@ header .container {
 }
 
 header .rowHeader {
-	margin-top: 42px;
+	margin-top: 45px;
 	color: white;
 	font-family: "OpenSans-Light";
 	text-shadow: 2px 2px 2px rgba(0, 0, 0, .45);
-	font-size: 16px;
+	font-size: 1.3em; /*16px;*/
 
 }
 
 header select {
 	color: rgba(9, 79, 125, 1);
-	/*padding-right: 95px;*/
-}
-
-.fa {
-	color: white;
 }
 
 header li {
 	list-style-type: none;
-
 }
 
+/* Style Header */
 section {
 	position: relative;
-	padding-top: 130px;
+	padding-top: 145px;
 	
 }
 
@@ -63,8 +55,8 @@ section .selecionaArquivo {
 	position: fixed;
 	background-color:black;
 	width: 100%;
-	height: 50px;
-	padding-top: 13px;
+	height: 55px;
+	padding-top: 17px;
 	padding-left: 50px;
 	color: white;
 	font-family: "OpenSans-Light";
@@ -73,41 +65,33 @@ section .selecionaArquivo {
 }
 
 section .table{
-	padding-top: 128px;
-	border-radius:4px;
-	border:1px solid white;
-
-
-}
-section .table{
 	background: linear-gradient(to left, white, white );
-}
-tr td{
-	border-radius:1px;
-	border:1px solid black;
-	background:#FFF;
-}
-
-tr:hover td {
-	background: #00688B;
-	color: white; 
-	
 }
 
 section .thead-inverse{
 	color: white;
-	background-color: green;
+	background-color: black;
 
 }
 
 section .rowCotacao{
-	
 	padding-top: 60px;
-	
 }
 
 section select{
 	color: black;
+}
+
+section .notification {
+	margin-top: -6px;
+	text-align: right;
+}
+
+section .contadornotificacao {
+	position: relative;
+    top: -7px;
+    left: -2px;
+    color: white;
 }
 
 footer {

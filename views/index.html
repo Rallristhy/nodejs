@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 
 	<!-- Estilos -->
-	<link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="resources/images/favicon.png" type="image/x-icon" />
   	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   	<link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css">
   	<link rel="stylesheet" type="text/css" href="views/css/bovespa.css">
@@ -20,12 +20,13 @@
 <body ng-controller="bovespaListController as bovespaList">
 
 	<header>
+
 		<div class="container">
 			<div class="row rowHeader">
 				<ul>
 					<li ng-repeat="header in dataHeader.bovespaHeaderData">
 						
-						<div class="col-xs-4 col-md-4 col-lg-4">
+						<div class="col-xs-6 col-md-6 col-lg-6">
 							<p>
 								<i class="fa fa-arrow-circle-right"></i>
 								<label>Nome do Arquivo: </label>
@@ -34,7 +35,7 @@
 							</p>
 						</div>
 						
-						<div class="col-xs-4 col-md-4 col-lg-4">
+						<div class="col-xs-6 col-md-6 col-lg-6">
 							<p>
 								<i class="fa fa-arrow-circle-right"></i>
 								<label>Cod. Origem: </label>
@@ -42,7 +43,7 @@
 							</p>
 						</div>
 
-						<div class="col-xs-4 col-md-4 col-lg-4">
+						<div class="col-xs-12 col-md-12 col-lg-12">
 							<p>
 								<i class="fa fa-calendar"></i>
 								<label>Data Geracao: </label>
@@ -50,21 +51,6 @@
 							</p>
 						</div>
 
-						<div class="col-xs-4 col-md-4 col-lg-4">
-							<p>
-								<i class="fa fa-arrow-circle-up"></i>
-								<label>Tipo de Registro: </label>
-								<small>{{header.h_tipo_registro}}</small>
-							</p>
-						</div>
-
-						<div class="col-xs-8 col-md-8 col-lg-8">
-							<p>
-								<i class="fa fa-arrow-circle-up"></i>
-								<label>Reserva: </label>
-								<small>{{header.h_reserva}}</small>
-							</p>
-						</div>
 					</li>
 				</ul>
 			</div>
@@ -76,15 +62,22 @@
 
 		<div class="container selecionaArquivo">
 			<div class="row">
-				<p>
+				<div class="col-xs-6 col-md-6 col-lg-6">
 					<i class="fa fa-files-o"></i>
 					<label>Arquivos: </label>
 					<small>
 						<select class="selectpicker" ng-model="selecionaArquivo" ng-options="x for x in arquivos" ng-change="capturaArquivoSelecionado(selecionaArquivo)">
 						</select>
 					</small>
-				</p>
+				</div>
+				<div class="col-xs-6 col-md-6 col-lg-6 notification">
+					<div class="btn btn-primary" >
+					  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+					  <strong><small ng-model="contadornotificacao" class="contadornotificacao">{{contadornotificacao}}</small></strong>
+					</div>
+				</div>
 			</div>
+
 		</div>
 		<div class="container">
 			<div class="row rowCotacao">

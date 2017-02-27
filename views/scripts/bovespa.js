@@ -8,6 +8,8 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
   $scope.dataCotacao = [];
   $scope.dataTrailer = [];
 
+  $scope.contadornotificacao = 0;
+
   /* Buscar Informações da rota /filesCargaInicial no servidor */
   $http({method: 'GET', url: '/filesCargaInicial'}).then(function successCallback(data) {
 
@@ -23,33 +25,16 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
 
 
   /* Buscar Informações da rota /dataHeader no servidor */
-  // $http({method: 'GET', url: '/dataHeader'}).then(function successCallback(data) {
-  //     /* Recebe o objeto GET por /data */
-  //     $scope.dataHeader = data.data;
+    $http({method: 'GET', url: '/dataBovespa'}).then(function successCallback(data) {
+       /* Recebe o objeto GET por /data */
+      $scope.dataHeader = data.data;
+      $scope.dataHeader.bovespaHeaderData = data.data[0];
+      $scope.dataCotacao.bovespaCotacaoData = data.data[1];
+      $scope.dataTrailer.bovespaTrailerData = data.data[3]; 
 
-  // }, function errorCallback(response) {
-  //   console.log('Erro ao receber arquivo: ' + response);
-  // });
-
-  // /* Buscar Informações da rota /dataCotacao no servidor */
-  // $http({method: 'GET', url: '/dataCotacao'}).then(function successCallback(data) {
-      
-  //     /* Recebe o objeto GET por /data */
-  //     $scope.dataCotacao = data.data;
-
-  // }, function errorCallback(response) {
-  //   console.log('Erro ao receber arquivo: ' + data);
-  // });
-
-  // /* Buscar Informações da rota /dataTrailer no servidor */
-  // $http({method: 'GET', url: '/dataTrailer'}).then(function successCallback(data) {
-      
-  //     /* Recebe o objeto GET por /data */
-  //     $scope.dataTrailer = data.data;
-
-  // }, function errorCallback(response) {
-  //   console.log('Erro ao receber arquivo: ' + data);
-  // });
+   }, function errorCallback(response) {
+     console.log('Erro ao receber arquivo: ' + response);
+   });
 
   /******* Serviço de Arquivos *******/
   $scope.capturaArquivoSelecionado = function(nome_arquivo){
@@ -79,6 +64,11 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
     $scope.$apply();
   }); 
 
+  socket.on('serviceMonitorArquivosAlerta', function(arquivo) {
+    console.log(arquivo);
+    $scope.contadornotificacao++;
+    $scope.$apply();
+  });
 
 
 }]);
