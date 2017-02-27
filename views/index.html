@@ -10,10 +10,12 @@
   	<link rel="stylesheet" type="text/css" href="views/css/bovespa.css">
 
   	<!-- Scripts -->
+  	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+  	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
   	<script src="views/scripts/bovespa.js"></script>
-  	<script src="/socket.io/socket.io.js"></script>
+  	<script src="socket.io/socket.io.js"></script>
 
   	<title>Bovespa</title>
 </head>
@@ -71,10 +73,18 @@
 					</small>
 				</div>
 				<div class="col-xs-6 col-md-6 col-lg-6 notification">
-					<div class="btn btn-primary" >
-					  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-					  <strong><small ng-model="contadornotificacao" class="contadornotificacao">{{contadornotificacao}}</small></strong>
+
+					<div class="dropdown">
+						<button class="btn btn-primary dropdown-toggle botaonotificacao" data-toggle="dropdown" ng-click="resetnotificacao()">
+						  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+						  <strong><small ng-model="contadornotificacao" class="contadornotificacao">{{contadornotificacao}}</small></strong>
+						  <!-- <span class="caret"></span> -->
+						</button>
+						<ul class="dropdown-menu">
+			    			<li class="containernotificacoes" ng-repeat="notificacao in notificacoes | orderBy: '-horario'">{{notificacao.status}}</li>
+			  			</ul>
 					</div>
+
 				</div>
 			</div>
 

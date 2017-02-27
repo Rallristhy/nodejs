@@ -8,6 +8,8 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
   $scope.dataCotacao = [];
   $scope.dataTrailer = [];
 
+  $scope.notificacoes = [];
+
   $scope.contadornotificacao = 0;
 
   /* Buscar Informações da rota /filesCargaInicial no servidor */
@@ -24,10 +26,9 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
   });
 
 
-  /* Buscar Informações da rota /dataHeader no servidor */
+  /* Buscar Informações da rota /dataBovespa no servidor */
     $http({method: 'GET', url: '/dataBovespa'}).then(function successCallback(data) {
        /* Recebe o objeto GET por /data */
-      $scope.dataHeader = data.data;
       $scope.dataHeader.bovespaHeaderData = data.data[0];
       $scope.dataCotacao.bovespaCotacaoData = data.data[1];
       $scope.dataTrailer.bovespaTrailerData = data.data[3]; 
@@ -36,17 +37,26 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
      console.log('Erro ao receber arquivo: ' + response);
    });
 
-  /******* Serviço de Arquivos *******/
+  /* Capturao o arquivo selecionado na select e envia para o servidor */
   $scope.capturaArquivoSelecionado = function(nome_arquivo){
 
     socket.emit("arquivoSelecionado", nome_arquivo);
     
   };
+
+  $scope.resetnotificacao = function(){
+     // $scope.document.getElementById("rall").background('red');
+    //console.log(document.getElementById('rall'));
+    $('.botaonotificacao:hover').css({"background": "rgba(9, 79, 125, .9)", 
+                                "border-color": "rgba(9, 79, 125, .9)"});
+
+    if($scope.contadornotificacao != 0){
+      $scope.contadornotificacao = 0;
+    }
+    
+  };
   
-  /* Ativa serviceMonitorArquivos Cliente */
-  socket.emit("serviceMonitorArquivos", "Ativando serviceMonitorArquivos Cliente");
-  
-  /* Escutando serviceMonitorArquivos no servidor */
+  /* Escutando serviceMonitorArquivos no servidor recebendo a lista de arquivos atualizada */
   socket.on("serviceMonitorArquivos", function(arquivosData){
 
     /* Atualiza a variável arquivos */
@@ -57,7 +67,9 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
 
   });
 
+  /* Carga na tabela com base no arquivo selecionado */
   socket.on('arquivoSelecionado', function(arquivo) {
+
     $scope.dataHeader.bovespaHeaderData = arquivo[0];
     $scope.dataCotacao.bovespaCotacaoData = arquivo[1];
     $scope.dataTrailer.bovespaTrailerData = arquivo[3];
@@ -65,9 +77,18 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
   }); 
 
   socket.on('serviceMonitorArquivosAlerta', function(arquivo) {
-    console.log(arquivo);
+
+    $('.botaonotificacao').css({"background": "#c0392b", 
+                                "border-color": "#c0392b"
+                              });
+
     $scope.contadornotificacao++;
+
+    $scope.notificacoes.push({status: "Arquivo "+arquivo.nome+" "+arquivo.status,
+                              horario: arquivo.horario});
+
     $scope.$apply();
+
   });
 
 

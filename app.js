@@ -205,17 +205,24 @@ fs.readdir(dirArquivos, function(erro, arquivos){
 /* Monitora novos arquivos */
 monitor.on('add', function(novoArquivo) {
 
+	now = new Date;
+
 	/* Armazena no vetor o novo arquivo ignorando o caminho completo */
 	arquivosData.push(novoArquivo.substring(dirArquivos.length));
 
 	/* Envia o para o cliente o vetor atualizado*/
 	io.emit('serviceMonitorArquivos', arquivosData);
-	io.emit('serviceMonitorArquivosAlerta', {nome: novoArquivo.substring(dirArquivos.length), status: 1});
+	io.emit('serviceMonitorArquivosAlerta', {
+												nome: novoArquivo.substring(dirArquivos.length), 
+												status: 'adicionado',
+												horario : now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()});
 
 });
 
 /* Monitora arquivos excluídos */
 monitor.on('unlink', function(excluiArquivo) {
+
+	now = new Date;
 
 	/* Procura o arquivo excluído e remove do vetor */
 	arquivosData.forEach(function (arquivo, indice) {
@@ -226,7 +233,10 @@ monitor.on('unlink', function(excluiArquivo) {
 
 	/* Envia o para o cliente o vetor atualizado*/
 	io.emit('serviceMonitorArquivos', arquivosData);
-	io.emit('serviceMonitorArquivosAlerta', {nome: excluiArquivo.substring(dirArquivos.length), status: 0});
+	io.emit('serviceMonitorArquivosAlerta', {
+												nome: excluiArquivo.substring(dirArquivos.length), 
+												status: 'excluído',
+												horario : now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()});
 
 });
 
@@ -319,6 +329,7 @@ io.on('connection', function(socket){
 				
 
 			});
+
 			bovespaData.push(bovespaHeaderData);
 			bovespaData.push(bovespaCotacaoData);
 			bovespaData.push(bovespaTrailerData);

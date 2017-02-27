@@ -32,7 +32,7 @@ header .rowHeader {
 	color: white;
 	font-family: "OpenSans-Light";
 	text-shadow: 2px 2px 2px rgba(0, 0, 0, .45);
-	font-size: 1.3em; /*16px;*/
+	font-size: 1.3em;
 
 }
 
@@ -60,7 +60,7 @@ section .selecionaArquivo {
 	padding-left: 50px;
 	color: white;
 	font-family: "OpenSans-Light";
-	font-size: 16px;
+	font-size: 1.1em;
 
 }
 
@@ -92,6 +92,24 @@ section .contadornotificacao {
     top: -7px;
     left: -2px;
     color: white;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, .45);
+}
+
+section .botaonotificacao {
+    background: rgba(9, 79, 125, .9);
+    border-color: rgba(9, 79, 125, .9);
+}
+
+section .botaonotificacao:hover {
+    background: rgba(9, 79, 125, .9);
+    border-color: rgba(9, 79, 125, .9);
+    -webkit-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    transform: scale(1.3);
+}
+
+section .containernotificacoes {
+    color: black;
 }
 
 footer {
