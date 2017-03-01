@@ -112,9 +112,13 @@ section .containernotificacoes {
     color: black;
 }
 
+section .dropdown-menu {
+    position:absolute;
+    right:0px;
+    left: 95px;
+    padding-left: 30px;
+}
+
 footer {
 	
 }
-/* 
-	http://www.flatuicolorpicker.com/ 
-*/

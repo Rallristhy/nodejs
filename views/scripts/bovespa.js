@@ -84,7 +84,7 @@ angular.module('bovespaApp', ['angularUtils.directives.dirPagination']).controll
 
     $scope.contadornotificacao++;
 
-    $scope.notificacoes.push({status: "Arquivo "+arquivo.nome+" "+arquivo.status,
+    $scope.notificacoes.push({status: " Arquivo "+arquivo.nome+" "+arquivo.status,
                               horario: arquivo.horario});
 
     $scope.$apply();
