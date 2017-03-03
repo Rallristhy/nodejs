@@ -15,7 +15,8 @@
     "bower": "^1.8.0",
     "ejs": "^2.5.5",
     "express": "^4.14.1",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "sqlite3": "^3.1.8"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
